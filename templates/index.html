@@ -1,0 +1,115 @@
+<html>
+<!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Chat em Tempo Real</title>
+       <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}">
+   </head>
+   <body>
+        <div id="writting"></div>
+        <form id="form_login">
+            <h1>Chat SocketIO</h1>
+            <label for="user">Informe o seu nome:</label>
+            <div>
+                <input id='user' required type='text' minlength="4">
+                <button type="submit">Entrar</button>
+            </div>
+        </form>
+    
+        <div id="chat" style="display:none">
+            <ul id="messages"></ul>
+
+            <form id="form" action="">
+                <input id="input" autocomplete="off" /><button>Enviar</button>
+            </form>
+       </div>
+
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+       <script>
+           var socket = io.connect('http://' + document.domain + ':' + location.port);
+           var user;
+
+ 
+           
+            function renderHistory() {
+                const history = {{ history | tojson}};
+               
+                var ul = document.getElementById('messages');
+                history.forEach(function(msg){
+                    console.log(msg)
+                    if (!msg.user || !msg.message) {
+                        return
+                    }
+                    var li = document.createElement('li');
+
+                    li.innerHTML = `<span class='user'>${msg.user}</span> ${msg.message}`
+                    ul.appendChild(li);
+               })
+
+            }
+
+             document.querySelector("#input").addEventListener('input', function(el) {
+                console.log(el.target.value.trim().length)
+                if( el.target.value.trim().length == 0 ){
+                    socket.emit('stop_writting', user)
+                    return
+                }
+                socket.emit('writting', user)
+            })
+
+           socket.on('message', function(msg) {
+               var ul = document.getElementById('messages');
+               var li = document.createElement('li');
+
+               li.innerHTML = `<span class='user'>${msg.user}</span> ${msg.message}`
+               ul.appendChild(li);
+
+               document.querySelector("#writting").innerHTML = ``
+               
+               window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth' // rolagem suave
+               });
+           });
+
+           socket.on('writting', function(user_writting){
+                document.querySelector("#writting").innerHTML = `${user_writting} está digitando...`
+           })
+
+           socket.on('stop_writting', function(user_writting){
+                document.querySelector("#writting").innerHTML = ``
+           })
+
+           document.getElementById('form').onsubmit = function(event) {
+
+                const payload = {
+                    "message":document.querySelector('#input').value,
+                    "user": user
+                }
+                
+               socket.emit('message', payload);
+               document.querySelector('#input').value = '';
+               event.preventDefault();
+
+               return false;
+           };
+
+           document.getElementById('form_login').onsubmit= function(event) {
+                user = document.querySelector("#user").value
+                document.querySelector("#chat").style.display='flex';
+                document.querySelector("#form_login").style.display='none'
+                
+                event.preventDefault();
+
+                renderHistory();
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth' // rolagem suave
+                });
+                return false;
+           }
+       </script>
+   </body>
+</html>
