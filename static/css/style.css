@@ -1,0 +1,90 @@
+* {
+  font-family: sans-serif;
+}
+li {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+  margin-bottom: 5px;
+  background-color: #efefef;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+input {
+  height: 40px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+}
+button {
+  height: 40px;
+}
+
+#writting {
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: red;
+  color: white;
+}
+#form_login {
+  width: 300px;
+  padding: 30px;
+  margin: 0 auto;
+  background: #ccc;
+  margin-top: 50%;
+  transform: translateY(-50%);
+  padding-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+}
+#form_login h1 {
+  text-align: center;
+}
+#form_login > div {
+  display: flex;
+  gap: 8px;
+}
+
+#form_login #user {
+  flex: 1;
+}
+
+#form {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+
+#form #input {
+  flex: 1;
+}
+
+#chat {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#messages {
+  flex: 1;
+  padding: 10px;
+  flex-direction: column;
+  display: flex;
+  gap: 10px;
+}
+
+#messages li:first-child {
+  margin-top: auto;
+}
+
+li span {
+  background: #555;
+  color: white;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
